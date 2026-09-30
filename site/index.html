@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily News Digest</title>
+<meta name="description" content="Daily digest of global and China finance and current-affairs headlines, translated into English and Vietnamese.">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="index.html">Daily News Digest</a>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <span class="lang-sw"><a class="active" href="index.html">EN</a><a href="vi/index.html">VI</a></span>
+      <button id="themeBtn" aria-label="toggle theme" title="toggle theme">◐</button>
+    </div>
+  </div>
+</nav>
+<main class="wrap">
+<div class="hero">
+  <h1>Daily News Digest</h1>
+  <p>Daily digest of global and China finance and current-affairs headlines, translated into English and Vietnamese.</p>
+</div>
+<div class="article" style="padding-top:24px">
+  <div class="kicker">Latest articles</div>
+  <div class="blog-list">
+    <a class="post-item" href="8941172211304826934.html"><span class="post-date">2026-09-30</span><span class="post-title">U.S. Home Prices &quot;Rising in Name, Falling in Reality&quot;: Can China&#x27;s Mortgage Subsidies and Four Monetary Tools Break the Deadlock?</span></a>
+  </div>
+  <div class="kicker" style="margin-top:40px">All articles · 1</div>
+</div>
+</main>
+<footer>
+  <div class="wrap">
+    <span>© 2026 Shengfeng Wang · Daily News Digest</span>
+    <span>Translated from <a href="https://blog.ltshijie.dpdns.org" target="_blank" rel="noopener">每日要闻综述</a></span>
+  </div>
+</footer>
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeBtn');
+  try{
+    var saved=localStorage.getItem('theme');
+    if(saved==='light'||saved==='dark') root.setAttribute('data-theme',saved);
+  }catch(e){}
+  function syncIcon(){
+    var t=root.getAttribute('data-theme');
+    var dark = t==='dark' || (t==='auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+    btn.textContent = dark ? '◑' : '◐';
+  }
+  btn.addEventListener('click',function(){
+    var t=root.getAttribute('data-theme');
+    var dark = t==='dark' || (t==='auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+    var next = dark ? 'light' : 'dark';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem('theme',next);}catch(e){}
+    syncIcon();
+  });
+  syncIcon();
+})();
+</script>
+</body>
+</html>
