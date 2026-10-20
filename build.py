@@ -7,6 +7,7 @@
 - Articles carry <link rel="canonical"> pointing at the Blogger original.
 Idempotent: regenerates everything from translations/ each run.
 """
+import base64
 import glob
 import html as htmlmod
 import json
@@ -18,6 +19,9 @@ from zoneinfo import ZoneInfo
 BASE = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(BASE, "site")
 TRANS_DIR = os.path.join(BASE, "translations")
+# Binary post images are stored in the repo as base64 text (push tooling is
+# UTF-8 only): translations/img/<pid>/<n>.<ext>.b64 -> site/img/<pid>/<n>.<ext>
+IMG_SRC_DIR = os.path.join(TRANS_DIR, "img")
 PERSONAL_INDEX = os.path.expanduser("~/workspace/personal-site/index.html")
 BJ = ZoneInfo("Asia/Shanghai")
 
@@ -261,6 +265,28 @@ def write_readme(n):
         f.write(readme)
 
 
+def write_images():
+    """Decode translations/img/<pid>/*.b64 into site/img/<pid>/*."""
+    if not os.path.isdir(IMG_SRC_DIR):
+        return
+    n = 0
+    for pid in sorted(os.listdir(IMG_SRC_DIR)):
+        src = os.path.join(IMG_SRC_DIR, pid)
+        if not os.path.isdir(src):
+            continue
+        dst = os.path.join(OUT_DIR, "img", pid)
+        os.makedirs(dst, exist_ok=True)
+        for fn in sorted(os.listdir(src)):
+            if not fn.endswith(".b64"):
+                continue
+            with open(os.path.join(src, fn), encoding="ascii") as f:
+                data = base64.b64decode(f.read())
+            with open(os.path.join(dst, fn[:-4]), "wb") as f:
+                f.write(data)
+            n += 1
+    print(f"IMAGES_OK files={n}")
+
+
 def main():
     posts = load_posts()
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -273,6 +299,7 @@ def main():
             write_article(p, "en", os.path.join(OUT_DIR, f"{p['pid']}.html"), "", "en")
         if "vi" in p["bodies"]:
             write_article(p, "vi", os.path.join(OUT_DIR, "vi", f"{p['pid']}.html"), "../", "vi")
+    write_images()
     write_readme(len(posts))
     print(f"BUILD_OK posts={len(posts)}")
 
