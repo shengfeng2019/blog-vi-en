@@ -265,6 +265,39 @@ def write_readme(n):
         f.write(readme)
 
 
+def fit_image(data, fn):
+    """Keep a decoded post image small enough for the deploy pipeline.
+
+    Vercel MCP calls in deploy.py pass file bytes base64-encoded as a single
+    argv argument, which the kernel caps at 128KB. Any image above 96KB gets
+    downscaled/re-encoded in place (filename and format preserved) until it
+    fits, so future covers can't break nightly deploys again.
+    """
+    LIMIT = 96 * 1024
+    if len(data) <= LIMIT:
+        return data
+    import io
+    from PIL import Image
+    ext = os.path.splitext(fn)[1].lower()
+    im = Image.open(io.BytesIO(data))
+    w, h = im.size
+    for _ in range(4):
+        w = max(w // 2, 480)
+        h = int(im.size[1] * w / im.size[0])
+        im = im.resize((w, h), Image.LANCZOS)
+        buf = io.BytesIO()
+        if ext in (".jpg", ".jpeg"):
+            im.convert("RGB").save(buf, "JPEG", quality=78, optimize=True)
+        elif ext == ".webp":
+            im.convert("RGB").save(buf, "WEBP", quality=75, method=6)
+        else:
+            im.save(buf, "PNG", optimize=True)
+        data = buf.getvalue()
+        if len(data) <= LIMIT:
+            break
+    return data
+
+
 def write_images():
     """Decode translations/img/<pid>/*.b64 into site/img/<pid>/*."""
     if not os.path.isdir(IMG_SRC_DIR):
@@ -281,6 +314,7 @@ def write_images():
                 continue
             with open(os.path.join(src, fn), encoding="ascii") as f:
                 data = base64.b64decode(f.read())
+            data = fit_image(data, fn[:-4])
             with open(os.path.join(dst, fn[:-4]), "wb") as f:
                 f.write(data)
             n += 1
