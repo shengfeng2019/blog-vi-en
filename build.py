@@ -145,6 +145,9 @@ THEME_JS = """<script>
 </script>"""
 
 
+GSC_META = '<meta name="google-site-verification" content="6CYDOi02qpe34esfZv_u8o-ZGSgHrve36DCVfzcuHqQ" />'
+
+
 def page_shell(lang, title, desc, body_html, canonical="", prefix="", html_lang="en"):
     canon = (f'<link rel="canonical" href="{htmlmod.escape(canonical, quote=True)}">'
              if canonical else "")
@@ -155,6 +158,7 @@ def page_shell(lang, title, desc, body_html, canonical="", prefix="", html_lang=
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{htmlmod.escape(title)}</title>
 <meta name="description" content="{htmlmod.escape(desc)}">
+{GSC_META}
 {canon}
 <link rel="stylesheet" href="{prefix}style.css">
 </head>
@@ -194,12 +198,17 @@ def write_article(post, lang, out_path, prefix, html_lang):
     back = "← Back to home" if lang == "en" else "← Về trang chủ"
     read_orig = ("Read the original (Chinese)" if lang == "en"
                  else "Đọc bản gốc (tiếng Trung)")
+    body_html = sanitize(post['bodies'][lang])
+    if lang == "vi":
+        # Article lives under /vi/, but images live under site/img/:
+        # without the ../ prefix every VI image resolved to /vi/img/ (404).
+        body_html = body_html.replace('src="img/', 'src="../img/')
     body = f"""<article class="article">
   <div class="kicker">{kicker}</div>
   <h1>{htmlmod.escape(title)}</h1>
   <div class="meta">{fmt_date(post['published'], lang)} · <a href="{htmlmod.escape(post['link'])}" target="_blank" rel="noopener">{read_orig}</a></div>
   <div class="post-body">
-{sanitize(post['bodies'][lang])}
+{body_html}
   </div>
   <p class="back"><a href="index.html">{back}</a></p>
 </article>"""
@@ -321,6 +330,37 @@ def write_images():
     print(f"IMAGES_OK files={n}")
 
 
+VIEN_BASE = "https://blog-vi-en.vercel.app"
+
+
+def write_sitemap_robots(posts):
+    def day(p):
+        return (p.get("published") or "")[:10] or None
+
+    latest = day(posts[0]) if posts else None
+    urls = [(VIEN_BASE + "/", latest, "1.0"), (VIEN_BASE + "/vi/", latest, "0.9")]
+    for p in posts:
+        if "en" in p["bodies"]:
+            urls.append(("%s/%s.html" % (VIEN_BASE, p["pid"]), day(p), "0.7"))
+        if "vi" in p["bodies"]:
+            urls.append(("%s/vi/%s.html" % (VIEN_BASE, p["pid"]), day(p), "0.7"))
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for loc, lastmod, prio in urls:
+        lines.append("  <url>")
+        lines.append("    <loc>%s</loc>" % loc)
+        if lastmod:
+            lines.append("    <lastmod>%s</lastmod>" % lastmod)
+        lines.append("    <priority>%s</priority>" % prio)
+        lines.append("  </url>")
+    lines.append("</urlset>")
+    with open(os.path.join(OUT_DIR, "sitemap.xml"), "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    with open(os.path.join(OUT_DIR, "robots.txt"), "w", encoding="utf-8") as f:
+        f.write("User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n" % VIEN_BASE)
+    print("SITEMAP_OK urls=%d" % len(urls))
+
+
 def main():
     posts = load_posts()
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -334,6 +374,7 @@ def main():
         if "vi" in p["bodies"]:
             write_article(p, "vi", os.path.join(OUT_DIR, "vi", f"{p['pid']}.html"), "../", "vi")
     write_images()
+    write_sitemap_robots(posts)
     write_readme(len(posts))
     print(f"BUILD_OK posts={len(posts)}")
 
