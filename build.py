@@ -304,6 +304,14 @@ def fit_image(data, fn):
         data = buf.getvalue()
         if len(data) <= LIMIT:
             break
+    if len(data) > LIMIT and ext == ".png":
+        # Photographic PNGs can stay over the limit even at 480px wide;
+        # a 256-color palette keeps the .png name and usually fits.
+        buf = io.BytesIO()
+        im.convert("RGB").quantize(colors=256,
+                                   method=Image.Quantize.MEDIANCUT).save(
+                                       buf, "PNG", optimize=True)
+        data = buf.getvalue()
     return data
 
 
