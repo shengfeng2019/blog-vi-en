@@ -9,4 +9,4 @@ Daily digest of global and China finance and current-affairs headlines, translat
 - 构建脚本：`build.py`（本地运行，输出到 `site/` 后推送）
 - 部署：Vercel（连接本仓库后自动部署）
 
-文章页均带有 canonical 指向 Blogger 原文。
+文章页 canonical 为自指（vien.wangshengfeng.dpdns.org 自身 URL），并带 hreflang（en/vi/x-default）、OpenGraph 与 NewsArticle JSON-LD；正文顶部保留「原文」链接指向 Blogger 中文原稿。

@@ -4,7 +4,8 @@
 - Source: translations/<pid>.json (metadata) + translations/<pid>.en.html / .vi.html (bodies).
 - Output: site/index.html (English home), site/vi/index.html (Vietnamese home),
   site/<pid>.html + site/vi/<pid>.html (articles), site/style.css, README.md.
-- Articles carry <link rel="canonical"> pointing at the Blogger original.
+- Articles carry a self-referential canonical (vien.wangshengfeng.dpdns.org),
+  hreflang alternates, OpenGraph tags and NewsArticle JSON-LD (SEO pass 2026-11-11).
 Idempotent: regenerates everything from translations/ each run.
 """
 import base64
@@ -148,7 +149,33 @@ THEME_JS = """<script>
 GSC_META = '<meta name="google-site-verification" content="6CYDOi02qpe34esfZv_u8o-ZGSgHrve36DCVfzcuHqQ" />'
 
 
-def page_shell(lang, title, desc, body_html, canonical="", prefix="", html_lang="en"):
+def hreflang_links(pairs, default_loc):
+    tags = [f'<link rel="alternate" hreflang="{hl}" href="{htmlmod.escape(href, quote=True)}">'
+            for hl, href in pairs]
+    tags.append(f'<link rel="alternate" hreflang="x-default" href="{htmlmod.escape(default_loc, quote=True)}">')
+    return "\n".join(tags)
+
+
+def og_tags(title, desc, url, site_name, og_type="website", published=None):
+    tags = [
+        f'<meta property="og:type" content="{og_type}">',
+        f'<meta property="og:title" content="{htmlmod.escape(title, quote=True)}">',
+        f'<meta property="og:description" content="{htmlmod.escape(desc, quote=True)}">',
+        f'<meta property="og:url" content="{htmlmod.escape(url, quote=True)}">',
+        f'<meta property="og:site_name" content="{htmlmod.escape(site_name, quote=True)}">',
+        '<meta name="twitter:card" content="summary">',
+        f'<meta name="twitter:title" content="{htmlmod.escape(title, quote=True)}">',
+        f'<meta name="twitter:description" content="{htmlmod.escape(desc, quote=True)}">',
+    ]
+    if published:
+        tags.append(f'<meta property="article:published_time" content="{htmlmod.escape(published, quote=True)}">')
+    return "\n".join(tags)
+
+
+FAVICON = '<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>">'
+
+
+def page_shell(lang, title, desc, body_html, canonical="", prefix="", html_lang="en", head_extra=""):
     canon = (f'<link rel="canonical" href="{htmlmod.escape(canonical, quote=True)}">'
              if canonical else "")
     return f"""<!DOCTYPE html>
@@ -160,6 +187,8 @@ def page_shell(lang, title, desc, body_html, canonical="", prefix="", html_lang=
 <meta name="description" content="{htmlmod.escape(desc)}">
 {GSC_META}
 {canon}
+{head_extra}
+{FAVICON}
 <link rel="stylesheet" href="{prefix}style.css">
 </head>
 <body>
@@ -213,9 +242,33 @@ def write_article(post, lang, out_path, prefix, html_lang):
   <p class="back"><a href="index.html">{back}</a></p>
 </article>"""
     site_name = SITE_NAME_EN if lang == "en" else SITE_NAME_VI
+    pid = post["pid"]
+    own_url = (f"{VIEN_BASE}/{pid}.html" if lang == "en"
+               else f"{VIEN_BASE}/vi/{pid}.html")
+    pairs = []
+    if "en" in post["bodies"]:
+        pairs.append(("en", f"{VIEN_BASE}/{pid}.html"))
+    if "vi" in post["bodies"]:
+        pairs.append(("vi", f"{VIEN_BASE}/vi/{pid}.html"))
+    published = (post.get("published") or "")[:10]
+    jsonld = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": title,
+        "description": post[f"desc_{lang}"],
+        "datePublished": published,
+        "inLanguage": lang,
+        "mainEntityOfPage": own_url,
+    }, ensure_ascii=False)
+    head_extra = "\n".join([
+        hreflang_links(pairs, f"{VIEN_BASE}/{pid}.html"),
+        og_tags(title, post[f"desc_{lang}"], own_url, site_name,
+                og_type="article", published=published),
+        f'<script type="application/ld+json">{jsonld}</script>',
+    ])
     out = page_shell(lang, title + " · " + site_name, post[f"desc_{lang}"],
-                     body, canonical=post["link"], prefix=prefix,
-                     html_lang=html_lang)
+                     body, canonical=own_url, prefix=prefix,
+                     html_lang=html_lang, head_extra=head_extra)
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(out)
@@ -249,8 +302,15 @@ def write_home(posts, lang, out_path, prefix, html_lang):
     else:
         parts.append(f"  <p>{empty}</p>")
     parts.append("</div>")
+    home_url = VIEN_BASE + "/" if lang == "en" else VIEN_BASE + "/vi/"
+    head_extra = "\n".join([
+        hreflang_links([("en", VIEN_BASE + "/"), ("vi", VIEN_BASE + "/vi/")],
+                       VIEN_BASE + "/"),
+        og_tags(site_name, site_desc, home_url, site_name),
+    ])
     out = page_shell(lang, site_name, site_desc, "\n".join(parts),
-                     prefix=prefix, html_lang=html_lang)
+                     canonical=home_url, prefix=prefix, html_lang=html_lang,
+                     head_extra=head_extra)
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(out)
@@ -268,7 +328,7 @@ def write_readme(n):
 - 构建脚本：`build.py`（本地运行，输出到 `site/` 后推送）
 - 部署：Vercel（连接本仓库后自动部署）
 
-文章页均带有 canonical 指向 Blogger 原文。
+文章页 canonical 为自指（vien.wangshengfeng.dpdns.org 自身 URL），并带 hreflang（en/vi/x-default）、OpenGraph 与 NewsArticle JSON-LD；正文顶部保留「原文」链接指向 Blogger 中文原稿。
 """
     with open(os.path.join(BASE, "README.md"), "w", encoding="utf-8") as f:
         f.write(readme)
@@ -338,27 +398,46 @@ def write_images():
     print(f"IMAGES_OK files={n}")
 
 
-VIEN_BASE = "https://blog-vi-en.vercel.app"
+VIEN_BASE = "https://vien.wangshengfeng.dpdns.org"
 
 
 def write_sitemap_robots(posts):
+    # Sitemap 五铁律（~/workspace/seo/SITEMAP-RULES.md，2026-11-06）：只放精锐页；
+    # lastmod 只认实质更新；多语言条目写 hreflang 全集（只列实际存在的版本）
+    # + x-default=en。
     def day(p):
         return (p.get("published") or "")[:10] or None
 
+    def alternates(pairs, default_loc):
+        return list(pairs) + [("x-default", default_loc)]
+
     latest = day(posts[0]) if posts else None
-    urls = [(VIEN_BASE + "/", latest, "1.0"), (VIEN_BASE + "/vi/", latest, "0.9")]
+    home_alts = alternates([("en", VIEN_BASE + "/"), ("vi", VIEN_BASE + "/vi/")],
+                           VIEN_BASE + "/")
+    urls = [(VIEN_BASE + "/", latest, "1.0", home_alts),
+            (VIEN_BASE + "/vi/", latest, "0.9", home_alts)]
     for p in posts:
+        pairs = []
         if "en" in p["bodies"]:
-            urls.append(("%s/%s.html" % (VIEN_BASE, p["pid"]), day(p), "0.7"))
+            pairs.append(("en", "%s/%s.html" % (VIEN_BASE, p["pid"])))
         if "vi" in p["bodies"]:
-            urls.append(("%s/vi/%s.html" % (VIEN_BASE, p["pid"]), day(p), "0.7"))
+            pairs.append(("vi", "%s/vi/%s.html" % (VIEN_BASE, p["pid"])))
+        if not pairs:
+            continue
+        alts = alternates(pairs, pairs[0][1])
+        for _, loc in pairs:
+            urls.append((loc, day(p), "0.7", alts))
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
-             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for loc, lastmod, prio in urls:
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+             'xmlns:xhtml="http://www.w3.org/1999/xhtml">']
+    for loc, lastmod, prio, alts in urls:
         lines.append("  <url>")
         lines.append("    <loc>%s</loc>" % loc)
         if lastmod:
             lines.append("    <lastmod>%s</lastmod>" % lastmod)
+        for hreflang, href in alts:
+            lines.append('    <xhtml:link rel="alternate" hreflang="%s" href="%s"/>'
+                         % (hreflang, href))
         lines.append("    <priority>%s</priority>" % prio)
         lines.append("  </url>")
     lines.append("</urlset>")
