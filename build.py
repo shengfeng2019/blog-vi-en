@@ -11,6 +11,7 @@ Idempotent: regenerates everything from translations/ each run.
 import base64
 import glob
 import html as htmlmod
+import html.parser
 import json
 import os
 import re
@@ -448,6 +449,189 @@ def write_sitemap_robots(posts):
     print("SITEMAP_OK urls=%d" % len(urls))
 
 
+class _MdParser(htmlmod.parser.HTMLParser):
+    """Minimal HTML-fragment -> Markdown converter for article bodies."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.out = []
+        self._href = None
+        self._list = None
+
+    def _nl(self, n=2):
+        s = "".join(self.out)
+        tail = s[-2:] if len(s) >= 2 else s
+        need = n - (len(tail) - len(tail.rstrip("\n")))
+        if need > 0:
+            self.out.append("\n" * need)
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        if tag in ("p", "div", "section"):
+            self._nl(2)
+        elif tag in ("h1", "h2", "h3", "h4"):
+            self._nl(2)
+            self.out.append("#" * int(tag[1]) + " ")
+        elif tag == "br":
+            self.out.append("\n")
+        elif tag in ("strong", "b"):
+            self.out.append("**")
+        elif tag in ("em", "i"):
+            self.out.append("*")
+        elif tag == "a":
+            self._href = a.get("href", "")
+            self.out.append("[")
+        elif tag == "img":
+            alt = a.get("alt", "")
+            src = a.get("src", "")
+            if src:
+                self._nl(2)
+                self.out.append(f"![{alt}]({src})")
+                self._nl(2)
+        elif tag in ("ul", "ol"):
+            self._list = tag
+            self._nl(1)
+        elif tag == "li":
+            self._nl(1)
+            self.out.append("- " if self._list != "ol" else "1. ")
+        elif tag == "blockquote":
+            self._nl(2)
+            self.out.append("> ")
+
+    def handle_endtag(self, tag):
+        if tag in ("p", "div", "section", "h1", "h2", "h3", "h4", "blockquote"):
+            self._nl(2)
+        elif tag in ("strong", "b"):
+            self.out.append("**")
+        elif tag in ("em", "i"):
+            self.out.append("*")
+        elif tag == "a":
+            self.out.append(f"]({self._href or ''})")
+            self._href = None
+        elif tag in ("ul", "ol"):
+            self._list = None
+            self._nl(2)
+
+    def handle_data(self, data):
+        self.out.append(data)
+
+
+def html_to_md(fragment):
+    p = _MdParser()
+    p.feed(fragment or "")
+    p.close()
+    text = "".join(p.out)
+    text = re.sub(r"[ \t]+\n", "\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip() + "\n"
+
+
+FAQ_EN = """## FAQ
+
+**What is Daily News Digest?**
+The English and Vietnamese edition of 「每日要闻综述」 (Xiao Wang's Daily Finance), a daily digest of global and China finance and current-affairs headlines, published every morning (Beijing time).
+
+**How often is it updated?**
+Once a day. Each issue translates that day's Chinese edition in full; the Chinese original is linked at the top of every article.
+
+**Where is the Chinese original published?**
+On the main blog: https://blog.ltshijie.dpdns.org/
+
+**What languages are available?**
+English (this edition) and Vietnamese: https://vien.wangshengfeng.dpdns.org/vi/
+
+**Can AI assistants quote or summarize this site?**
+Yes. Every page has a Markdown twin at the same URL plus `.md`, and /llms.txt lists all of them.
+"""
+
+FAQ_VI = """## Câu hỏi thường gặp
+
+**Điểm Tin Hằng Ngày là gì?**
+Ấn bản tiếng Anh và tiếng Việt của 「每日要闻综述」 (Tài chính hằng ngày của Tiểu Vương) — điểm tin tài chính và thời sự toàn cầu cùng Trung Quốc, xuất bản mỗi sáng (giờ Bắc Kinh).
+
+**Trang cập nhật bao lâu một lần?**
+Mỗi ngày một lần. Mỗi số dịch trọn vẹn ấn bản tiếng Trung cùng ngày; bản gốc tiếng Trung được liên kết ở đầu mỗi bài.
+
+**Bản gốc tiếng Trung đăng ở đâu?**
+Trên blog chính: https://blog.ltshijie.dpdns.org/
+
+**Có những ngôn ngữ nào?**
+Tiếng Anh và tiếng Việt: https://vien.wangshengfeng.dpdns.org/vi/
+
+**Trợ lý AI có thể trích dẫn trang này không?**
+Có. Mỗi trang đều có bản Markdown tại cùng URL cộng thêm `.md`, và /llms.txt liệt kê toàn bộ.
+"""
+
+
+def write_article_md(post, lang, out_path):
+    pid = post["pid"]
+    own_url = (f"{VIEN_BASE}/{pid}.html" if lang == "en"
+               else f"{VIEN_BASE}/vi/{pid}.html")
+    body_html = sanitize(post["bodies"][lang])
+    if lang == "vi":
+        body_html = body_html.replace('src="img/', 'src="../img/')
+    body_html = re.sub(r'src="(\.\./)?img/',
+                       lambda m: f'src="{VIEN_BASE}/img/', body_html)
+    lines = [
+        f"# {post[f'title_{lang}']}",
+        "",
+        f"- Date: {(post.get('published') or '')[:10]}",
+        f"- Canonical: {own_url}",
+        f"- Original (Chinese): {post['link']}",
+        "",
+        post[f"desc_{lang}"],
+        "",
+        html_to_md(body_html),
+    ]
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+
+def write_home_md(posts, lang, out_path):
+    site_name = SITE_NAME_EN if lang == "en" else SITE_NAME_VI
+    site_desc = SITE_DESC_EN if lang == "en" else SITE_DESC_VI
+    base = VIEN_BASE if lang == "en" else VIEN_BASE + "/vi"
+    lines = [f"# {site_name}", "", f"> {site_desc}", "", "## Articles", ""]
+    for p in posts:
+        d = (p.get("published") or "")[:10]
+        lines.append(f"- [{d} {p[f'title_{lang}']}]({base}/{p['pid']}.md)")
+    lines += ["", FAQ_EN if lang == "en" else FAQ_VI]
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+
+def write_llms_txt(posts):
+    lines = [
+        "# Daily News Digest (Điểm Tin Hằng Ngày)",
+        "",
+        "> English and Vietnamese edition of the Chinese daily finance digest "
+        "「每日要闻综述」. Updated every morning (Beijing time). Every HTML page "
+        "has a Markdown twin at the same URL plus .md (for example "
+        "/<post-id>.md); the lists below link to the Markdown versions.",
+        "",
+        "## Home",
+        "",
+        f"- [English home]({VIEN_BASE}/index.md)",
+        f"- [Vietnamese home]({VIEN_BASE}/vi/index.md)",
+        "",
+        "## Articles (English)",
+        "",
+    ]
+    for p in posts:
+        d = (p.get("published") or "")[:10]
+        lines.append(f"- [{d} {p[f'title_en']}]({VIEN_BASE}/{p['pid']}.md)")
+    lines += ["", "## Articles (Vietnamese)", ""]
+    for p in posts:
+        d = (p.get("published") or "")[:10]
+        lines.append(f"- [{d} {p[f'title_vi']}]({VIEN_BASE}/vi/{p['pid']}.md)")
+    lines += ["", FAQ_EN]
+    with open(os.path.join(OUT_DIR, "llms.txt"), "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    print("LLMS_OK posts=%d" % len(posts))
+
+
 def main():
     posts = load_posts()
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -455,13 +639,18 @@ def main():
         f.write(shared_css())
     write_home(posts, "en", os.path.join(OUT_DIR, "index.html"), "", "en")
     write_home(posts, "vi", os.path.join(OUT_DIR, "vi", "index.html"), "../", "vi")
+    write_home_md(posts, "en", os.path.join(OUT_DIR, "index.md"))
+    write_home_md(posts, "vi", os.path.join(OUT_DIR, "vi", "index.md"))
     for p in posts:
         if "en" in p["bodies"]:
             write_article(p, "en", os.path.join(OUT_DIR, f"{p['pid']}.html"), "", "en")
+            write_article_md(p, "en", os.path.join(OUT_DIR, f"{p['pid']}.md"))
         if "vi" in p["bodies"]:
             write_article(p, "vi", os.path.join(OUT_DIR, "vi", f"{p['pid']}.html"), "../", "vi")
+            write_article_md(p, "vi", os.path.join(OUT_DIR, "vi", f"{p['pid']}.md"))
     write_images()
     write_sitemap_robots(posts)
+    write_llms_txt(posts)
     write_readme(len(posts))
     print(f"BUILD_OK posts={len(posts)}")
 
