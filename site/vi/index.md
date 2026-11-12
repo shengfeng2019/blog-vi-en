@@ -4,6 +4,7 @@
 
 ## Articles
 
+- [2026-11-12 Tin ngày 12/11: Bê bối cháy tới Nhà Trắng, hội đồng quản trị chuẩn bị bãi nhiệm Jensen Huang — Chỉ sau một đêm, xác suất đã đảo chiều](https://vien.wangshengfeng.dpdns.org/vi/1788026864654177673.md)
 - [2026-11-11 Tin ngày 11/11: 7,5 tỷ USD và 240.000 con chip — Jensen Huang từ nạn nhân thành nhân vật chính chỉ sau một bài báo](https://vien.wangshengfeng.dpdns.org/vi/8580899876415532679.md)
 - [2026-11-10 Tin ngày 10/11: Jensen Huang đã nhận, còn 'nữ gián điệp' thì chưa ai nhận](https://vien.wangshengfeng.dpdns.org/vi/1827421705131411322.md)
 - [2026-11-09 Tin ngày 9/11: Ba tốc độ tự sửa sai — Tuần dữ liệu, bàn đàm phán và một quốc gia không có phanh](https://vien.wangshengfeng.dpdns.org/vi/177347898640863823.md)

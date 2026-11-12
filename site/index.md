@@ -4,6 +4,7 @@
 
 ## Articles
 
+- [2026-11-12 Nov 12 Headlines: Scandal Reaches the White House, Board Prepares to Oust Jensen Huang — Overnight, the Odds Flipped](https://vien.wangshengfeng.dpdns.org/1788026864654177673.md)
 - [2026-11-11 Nov 11 Headlines: $7.5 Billion and 240,000 Chips — Jensen Huang Went From Victim to Central Figure in a Single Report](https://vien.wangshengfeng.dpdns.org/8580899876415532679.md)
 - [2026-11-10 Nov 10 Headlines: Jensen Huang Admitted It, but No One Has Admitted to the 'Female Spy'](https://vien.wangshengfeng.dpdns.org/1827421705131411322.md)
 - [2026-11-09 Nov 9 Headlines: Three Speeds of Self-Correction — Data Week, the Negotiating Table, and a Country With No Brakes](https://vien.wangshengfeng.dpdns.org/177347898640863823.md)
