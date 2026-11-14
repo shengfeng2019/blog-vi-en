@@ -4,6 +4,7 @@
 
 ## Articles
 
+- [2026-11-14 Tin ngày 14/11: Trump đổi giọng, Bessent điểm tên, tờ rơi ở Thành Đô lan truyền — Ngọn lửa đã lan từ một người sang cả một hệ thống](https://vien.wangshengfeng.dpdns.org/vi/4266349255973335437.md)
 - [2026-11-13 Tin ngày 13/11: Jensen Huang từ chức, Quách Thụ Thanh đề cập thuế thừa kế, Vance bị điểm tên — Nơi quy tắc không chạm tới, người ta tính sổ bằng cách khác](https://vien.wangshengfeng.dpdns.org/vi/7188560814868834049.md)
 - [2026-11-12 Tin ngày 12/11: Bê bối cháy tới Nhà Trắng, hội đồng quản trị chuẩn bị bãi nhiệm Jensen Huang — Chỉ sau một đêm, xác suất đã đảo chiều](https://vien.wangshengfeng.dpdns.org/vi/1788026864654177673.md)
 - [2026-11-11 Tin ngày 11/11: 7,5 tỷ USD và 240.000 con chip — Jensen Huang từ nạn nhân thành nhân vật chính chỉ sau một bài báo](https://vien.wangshengfeng.dpdns.org/vi/8580899876415532679.md)

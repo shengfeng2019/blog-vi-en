@@ -4,6 +4,7 @@
 
 ## Articles
 
+- [2026-11-14 Nov 14 Headlines: Trump Walks It Back, Bessent Names Names, a Chengdu Flyer Goes Viral — the Fire Has Moved From One Man to a Whole System](https://vien.wangshengfeng.dpdns.org/4266349255973335437.md)
 - [2026-11-13 Nov 13 Headlines: Jensen Huang Resigns, Guo Shuqing Floats an Inheritance Tax, Vance Gets Named — Where the Rules Can't Reach, the Bill Gets Settled Another Way](https://vien.wangshengfeng.dpdns.org/7188560814868834049.md)
 - [2026-11-12 Nov 12 Headlines: Scandal Reaches the White House, Board Prepares to Oust Jensen Huang — Overnight, the Odds Flipped](https://vien.wangshengfeng.dpdns.org/1788026864654177673.md)
 - [2026-11-11 Nov 11 Headlines: $7.5 Billion and 240,000 Chips — Jensen Huang Went From Victim to Central Figure in a Single Report](https://vien.wangshengfeng.dpdns.org/8580899876415532679.md)
