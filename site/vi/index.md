@@ -4,6 +4,7 @@
 
 ## Articles
 
+- [2026-11-15 Tin ngày 15/11: Bài học quyền chọn 200 triệu USD, tấm vé NATO và một thông báo sửa hiến pháp — Quy tắc viết trên giấy, ai sẽ thực thi?](https://vien.wangshengfeng.dpdns.org/vi/6300549728378474656.md)
 - [2026-11-14 Tin ngày 14/11: Trump đổi giọng, Bessent điểm tên, tờ rơi ở Thành Đô lan truyền — Ngọn lửa đã lan từ một người sang cả một hệ thống](https://vien.wangshengfeng.dpdns.org/vi/4266349255973335437.md)
 - [2026-11-13 Tin ngày 13/11: Jensen Huang từ chức, Quách Thụ Thanh đề cập thuế thừa kế, Vance bị điểm tên — Nơi quy tắc không chạm tới, người ta tính sổ bằng cách khác](https://vien.wangshengfeng.dpdns.org/vi/7188560814868834049.md)
 - [2026-11-12 Tin ngày 12/11: Bê bối cháy tới Nhà Trắng, hội đồng quản trị chuẩn bị bãi nhiệm Jensen Huang — Chỉ sau một đêm, xác suất đã đảo chiều](https://vien.wangshengfeng.dpdns.org/vi/1788026864654177673.md)
