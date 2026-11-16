@@ -4,6 +4,7 @@
 
 ## Articles
 
+- [2026-11-16 Nov 16 Headlines: Rate-Hike Countdown, an Old-Story Storm and Comeback Rumours — Probability Is Not a Decision](https://vien.wangshengfeng.dpdns.org/7362903852734160184.md)
 - [2026-11-15 Nov 15 Headlines: A $200 Million Options Lesson, a NATO Ticket and a Constitutional Notice — the Rules Are on Paper, but Who Enforces Them](https://vien.wangshengfeng.dpdns.org/6300549728378474656.md)
 - [2026-11-14 Nov 14 Headlines: Trump Walks It Back, Bessent Names Names, a Chengdu Flyer Goes Viral — the Fire Has Moved From One Man to a Whole System](https://vien.wangshengfeng.dpdns.org/4266349255973335437.md)
 - [2026-11-13 Nov 13 Headlines: Jensen Huang Resigns, Guo Shuqing Floats an Inheritance Tax, Vance Gets Named — Where the Rules Can't Reach, the Bill Gets Settled Another Way](https://vien.wangshengfeng.dpdns.org/7188560814868834049.md)
