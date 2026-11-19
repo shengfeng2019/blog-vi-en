@@ -4,6 +4,7 @@
 
 ## Articles
 
+- [2026-11-19 Tin ngày 18/11: Ba cử chỉ nhỏ, một lần cắt nguồn cung — Ai mới là người quyết định?](https://vien.wangshengfeng.dpdns.org/vi/6024453735347618368.md)
 - [2026-11-18 Tin ngày 17/11: Cầu đã sập, cuộc họp chưa bắt đầu — Ai mới là người quyết định?](https://vien.wangshengfeng.dpdns.org/vi/591956166921683342.md)
 - [2026-11-17 Tin ngày 16/11: Không phản đối không phải là ủng hộ — Một quy định mới đẩy kiểm soát sang sức mạnh tính toán](https://vien.wangshengfeng.dpdns.org/vi/6331396908639039618.md)
 - [2026-11-16 Tin ngày 16/11: Đếm ngược tăng lãi suất, sóng gió từ một tin cũ và tin đồn trở lại — Xác suất không phải là quyết định](https://vien.wangshengfeng.dpdns.org/vi/7362903852734160184.md)
