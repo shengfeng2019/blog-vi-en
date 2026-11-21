@@ -4,6 +4,7 @@
 
 ## Articles
 
+- [2026-11-21 Nov 20 Headlines: Black Friday, a Three-Part Prophecy in Doubt and One Piece of Good News That Was Denied](https://vien.wangshengfeng.dpdns.org/1799621075608119249.md)
 - [2026-11-20 Nov 19 Headlines: A Three-Way Summit, One Public Break and the Biggest IPO in History — Who Decides?](https://vien.wangshengfeng.dpdns.org/8450660671119611077.md)
 - [2026-11-19 Nov 18 Headlines: Three Small Gestures, One Cut-Off — Who Decides?](https://vien.wangshengfeng.dpdns.org/6024453735347618368.md)
 - [2026-11-18 Nov 17 Headlines: The Bridge Is Down, the Meeting Hasn't Started — Who Decides?](https://vien.wangshengfeng.dpdns.org/591956166921683342.md)
