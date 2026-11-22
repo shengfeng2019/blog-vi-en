@@ -4,6 +4,7 @@
 
 ## Articles
 
+- [2026-11-22 Tin ngày 21/11: 'Quốc gia bắt đầu bằng chữ T' của Musk, Trump 'giải cứu' Jensen Huang và ba lần gián đoạn trong một tuần](https://vien.wangshengfeng.dpdns.org/vi/7928575768984038674.md)
 - [2026-11-21 Tin ngày 20/11: Thứ Sáu đen, nghi vấn về 'ba bước' và một tin tốt bị phủ nhận](https://vien.wangshengfeng.dpdns.org/vi/1799621075608119249.md)
 - [2026-11-20 Tin ngày 19/11: Hội nghị ba bên, một lần cắt đứt công khai và IPO lớn nhất lịch sử — Ai mới là người quyết định?](https://vien.wangshengfeng.dpdns.org/vi/8450660671119611077.md)
 - [2026-11-19 Tin ngày 18/11: Ba cử chỉ nhỏ, một lần cắt nguồn cung — Ai mới là người quyết định?](https://vien.wangshengfeng.dpdns.org/vi/6024453735347618368.md)
