@@ -4,6 +4,7 @@
 
 ## Articles
 
+- [2026-11-23 Nov 22 Headlines: Trump Tried to Put Out the Fire — and It Burned Hotter: the Nvidia Chip Pipeline and Five Big Economic Events Next Week](https://vien.wangshengfeng.dpdns.org/8093631785370763939.md)
 - [2026-11-22 Nov 21 Headlines: Musk's 'T Country', Trump Rescues Jensen Huang and Three Outages in One Week](https://vien.wangshengfeng.dpdns.org/7928575768984038674.md)
 - [2026-11-21 Nov 20 Headlines: Black Friday, a Three-Part Prophecy in Doubt and One Piece of Good News That Was Denied](https://vien.wangshengfeng.dpdns.org/1799621075608119249.md)
 - [2026-11-20 Nov 19 Headlines: A Three-Way Summit, One Public Break and the Biggest IPO in History — Who Decides?](https://vien.wangshengfeng.dpdns.org/8450660671119611077.md)
