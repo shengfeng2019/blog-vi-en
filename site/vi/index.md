@@ -4,6 +4,7 @@
 
 ## Articles
 
+- [2026-11-24 Tin ngày 23/11: Jensen Huang trở lại sau 11 ngày, cổ phiếu tăng vọt 31,5% — Trump nhận công, cuộc điều tra vẫn chưa kết thúc](https://vien.wangshengfeng.dpdns.org/vi/8847070695541165267.md)
 - [2026-11-23 Tin ngày 22/11: Trump muốn dập lửa, lửa càng cháy mạnh — Chuỗi chip Nvidia và năm sự kiện kinh tế lớn tuần tới](https://vien.wangshengfeng.dpdns.org/vi/8093631785370763939.md)
 - [2026-11-22 Tin ngày 21/11: 'Quốc gia bắt đầu bằng chữ T' của Musk, Trump 'giải cứu' Jensen Huang và ba lần gián đoạn trong một tuần](https://vien.wangshengfeng.dpdns.org/vi/7928575768984038674.md)
 - [2026-11-21 Tin ngày 20/11: Thứ Sáu đen, nghi vấn về 'ba bước' và một tin tốt bị phủ nhận](https://vien.wangshengfeng.dpdns.org/vi/1799621075608119249.md)
