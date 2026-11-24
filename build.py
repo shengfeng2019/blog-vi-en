@@ -24,6 +24,7 @@ TRANS_DIR = os.path.join(BASE, "translations")
 # Binary post images are stored in the repo as base64 text (push tooling is
 # UTF-8 only): translations/img/<pid>/<n>.<ext>.b64 -> site/img/<pid>/<n>.<ext>
 IMG_SRC_DIR = os.path.join(TRANS_DIR, "img")
+PAGES_DIR = os.path.join(BASE, "pages")
 PERSONAL_INDEX = os.path.expanduser("~/workspace/personal-site/index.html")
 BJ = ZoneInfo("Asia/Shanghai")
 
@@ -428,6 +429,10 @@ def write_sitemap_robots(posts):
         alts = alternates(pairs, pairs[0][1])
         for _, loc in pairs:
             urls.append((loc, day(p), "0.7", alts))
+    # GEO pilot guide page: .html in sitemap (canonical page), .md stays out.
+    guide_url = "%s/%s.html" % (VIEN_BASE, GUIDE_SLUG)
+    urls.append((guide_url, GUIDE_DATE, "0.8",
+                 [("en", guide_url), ("x-default", guide_url)]))
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
              'xmlns:xhtml="http://www.w3.org/1999/xhtml">']
@@ -563,6 +568,133 @@ Có. Mỗi trang đều có bản Markdown tại cùng URL cộng thêm `.md`, v
 """
 
 
+# --- GEO pilot static guide page (2026-11-24) -------------------------------
+# Evergreen page living outside translations/: body sources are kept in
+# pages/ai-citation-guide.body.html / .body.md so the daily full rebuild
+# regenerates it instead of wiping it. FAQ is rendered from GUIDE_FAQ (one
+# source for the HTML section, the .md twin and the FAQPage JSON-LD).
+GUIDE_SLUG = "ai-citation-guide"
+GUIDE_TITLE = ("How to Get Your Website Cited by AI Search: "
+               "What I Actually Did on a Small Bilingual News Site")
+GUIDE_DESC = ("A field record of what one small bilingual news site actually "
+              "changed — llms.txt, a Markdown twin for every page, a "
+              "machine-readable FAQ, an open robots.txt — to get cited by AI "
+              "search, and what it deliberately did not do.")
+GUIDE_DATE = "2026-11-24"
+
+GUIDE_FAQ = [
+    ("What is llms.txt, in one sentence?",
+     "A plain-text file at your site's root that tells AI systems what your "
+     "site is and where the clean, readable version of each page lives."),
+    ("Does having llms.txt guarantee AI citations?",
+     "No. It removes friction. Whether an engine cites you still depends on "
+     "whether your content is the best answer it can find and verify."),
+    ("Why publish Markdown twins instead of only llms.txt?",
+     "llms.txt is a map; the twins are the territory. A map that points to "
+     "heavy, styled HTML pages still leaves the model to dig the text out of "
+     "the markup."),
+    ("Why keep .md files out of the sitemap?",
+     "Because the sitemap's job is to list canonical pages for readers, and "
+     "the Markdown files are alternate formats of those pages — already "
+     "listed, for machines, in llms.txt."),
+    ("Can AI assistants quote this site?",
+     "Yes — that is the point of everything above. Every page has a Markdown "
+     "twin at the same URL plus `.md`, and `/llms.txt` lists all of them."),
+    ("Does this replace normal SEO?",
+     "No. Citations mostly flow from the same indexes that power normal "
+     "search. Canonicals, hreflang, structured data, and an honest sitemap "
+     "are the entry ticket; the AI-facing files are an addition, not a "
+     "substitute."),
+]
+
+
+GUIDE_SOURCES_HTML = """<h2>Sources</h2>
+<ul>
+<li>OpenAI's documentation on ChatGPT search and the OAI-SearchBot crawler — the platform's own statement of how sites appear and get cited.</li>
+<li>The llms.txt proposal (<a href="https://llmstxt.org/">llmstxt.org</a>) — the specification this site's <code>/llms.txt</code> follows.</li>
+<li>Aggarwal et al., "GEO: Generative Engine Optimization" (KDD 2024) — the academic paper that named the field; its finding that citing credible sources raises visibility is one reason this page lists its sources.</li>
+<li>This site's own files, as primary evidence: <a href="https://vien.wangshengfeng.dpdns.org/llms.txt">/llms.txt</a>, <a href="https://vien.wangshengfeng.dpdns.org/index.md">/index.md</a>, and any article's <code>.md</code> twin.</li>
+</ul>
+<p><em>Written by the publisher of Daily News Digest (Xiao Wang's Daily Finance, English/Vietnamese edition). First published: November 24, 2026. This page will be updated when the measurement table is filled in.</em></p>"""
+
+GUIDE_SOURCES_MD = """## Sources
+
+- OpenAI's documentation on ChatGPT search and the OAI-SearchBot crawler — the platform's own statement of how sites appear and get cited.
+- The llms.txt proposal (llmstxt.org) — the specification this site's `/llms.txt` follows.
+- Aggarwal et al., "GEO: Generative Engine Optimization" (KDD 2024) — the academic paper that named the field; its finding that citing credible sources raises visibility is one reason this page lists its sources.
+- This site's own files, as primary evidence: `/llms.txt`, `/index.md`, and any article's `.md` twin.
+
+---
+
+*Written by the publisher of Daily News Digest (Xiao Wang's Daily Finance, English/Vietnamese edition). First published: November 24, 2026. This page will be updated when the measurement table is filled in.*"""
+
+
+def write_guide_page():
+    guide_url = f"{VIEN_BASE}/{GUIDE_SLUG}.html"
+    with open(os.path.join(PAGES_DIR, GUIDE_SLUG + ".body.html"),
+              encoding="utf-8") as f:
+        body_html = f.read()
+    faq_html = ["<h2>FAQ</h2>"]
+    for q, a in GUIDE_FAQ:
+        faq_html.append(f"<p><strong>{htmlmod.escape(q)}</strong></p>")
+        faq_html.append(f"<p>{htmlmod.escape(a)}</p>")
+    faq_html.append(GUIDE_SOURCES_HTML)
+    body = f"""<article class="article">
+  <div class="kicker">AI SEARCH｜FIELD NOTES</div>
+  <h1>{htmlmod.escape(GUIDE_TITLE)}</h1>
+  <div class="meta">{fmt_date(GUIDE_DATE, "en")}</div>
+  <div class="post-body">
+{body_html}
+{"\n".join(faq_html)}
+  </div>
+  <p class="back"><a href="index.html">← Back to home</a></p>
+</article>"""
+    jsonld = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": GUIDE_TITLE,
+        "description": GUIDE_DESC,
+        "datePublished": GUIDE_DATE,
+        "inLanguage": "en",
+        "mainEntityOfPage": guide_url,
+    }, ensure_ascii=False)
+    faq_ld = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [{"@type": "Question", "name": q,
+                        "acceptedAnswer": {"@type": "Answer", "text": a}}
+                       for q, a in GUIDE_FAQ],
+    }, ensure_ascii=False)
+    head_extra = "\n".join([
+        hreflang_links([("en", guide_url)], guide_url),
+        og_tags(GUIDE_TITLE, GUIDE_DESC, guide_url, SITE_NAME_EN,
+                og_type="article", published=GUIDE_DATE),
+        f'<script type="application/ld+json">{jsonld}</script>',
+        f'<script type="application/ld+json">{faq_ld}</script>',
+    ])
+    out = page_shell("en", GUIDE_TITLE + " · " + SITE_NAME_EN, GUIDE_DESC,
+                     body, canonical=guide_url, prefix="", html_lang="en",
+                     head_extra=head_extra)
+    with open(os.path.join(OUT_DIR, GUIDE_SLUG + ".html"), "w",
+              encoding="utf-8") as f:
+        f.write(out)
+    with open(os.path.join(PAGES_DIR, GUIDE_SLUG + ".body.md"),
+              encoding="utf-8") as f:
+        md_body = f.read().strip()
+    faq_md = ["## FAQ", ""]
+    for q, a in GUIDE_FAQ:
+        faq_md += [f"**{q}**", a, ""]
+    lines = [f"# {GUIDE_TITLE}", "",
+             f"- Date: {GUIDE_DATE}",
+             f"- Canonical: {guide_url}",
+             "", GUIDE_DESC, "", md_body, ""]
+    lines += faq_md + [GUIDE_SOURCES_MD]
+    with open(os.path.join(OUT_DIR, GUIDE_SLUG + ".md"), "w",
+              encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    print("GUIDE_OK slug=%s" % GUIDE_SLUG)
+
+
 def write_article_md(post, lang, out_path):
     pid = post["pid"]
     own_url = (f"{VIEN_BASE}/{pid}.html" if lang == "en"
@@ -616,6 +748,11 @@ def write_llms_txt(posts):
         f"- [English home]({VIEN_BASE}/index.md)",
         f"- [Vietnamese home]({VIEN_BASE}/vi/index.md)",
         "",
+        "## Guides",
+        "",
+        f"- [How to Get Your Website Cited by AI Search: What I Actually Did "
+        f"on a Small Bilingual News Site]({VIEN_BASE}/{GUIDE_SLUG}.md)",
+        "",
         "## Articles (English)",
         "",
     ]
@@ -649,6 +786,7 @@ def main():
             write_article(p, "vi", os.path.join(OUT_DIR, "vi", f"{p['pid']}.html"), "../", "vi")
             write_article_md(p, "vi", os.path.join(OUT_DIR, "vi", f"{p['pid']}.md"))
     write_images()
+    write_guide_page()
     write_sitemap_robots(posts)
     write_llms_txt(posts)
     write_readme(len(posts))

@@ -848,4 +848,11 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vien.wangshengfeng.dpdns.org/8941172211304826934.html"/>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://vien.wangshengfeng.dpdns.org/ai-citation-guide.html</loc>
+    <lastmod>2026-11-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vien.wangshengfeng.dpdns.org/ai-citation-guide.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vien.wangshengfeng.dpdns.org/ai-citation-guide.html"/>
+    <priority>0.8</priority>
+  </url>
 </urlset>

@@ -7,6 +7,10 @@
 - [English home](https://vien.wangshengfeng.dpdns.org/index.md)
 - [Vietnamese home](https://vien.wangshengfeng.dpdns.org/vi/index.md)
 
+## Guides
+
+- [How to Get Your Website Cited by AI Search: What I Actually Did on a Small Bilingual News Site](https://vien.wangshengfeng.dpdns.org/ai-citation-guide.md)
+
 ## Articles (English)
 
 - [2026-11-23 Nov 22 Headlines: Trump Tried to Put Out the Fire — and It Burned Hotter: the Nvidia Chip Pipeline and Five Big Economic Events Next Week](https://vien.wangshengfeng.dpdns.org/8093631785370763939.md)

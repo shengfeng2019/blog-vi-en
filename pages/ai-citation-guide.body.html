@@ -1,0 +1,65 @@
+<h2>TL;DR</h2>
+<ul>
+<li>I run a small bilingual (English/Vietnamese) daily news site. I wanted AI assistants — ChatGPT, Perplexity, Gemini, Claude — to be able to find, read, and quote it.</li>
+<li>I did not buy links or hire anyone. I changed how the site publishes its own pages: a root-level <code>/llms.txt</code>, a clean Markdown twin for every page, an FAQ written for machines as much as for people, and a fully open robots.txt.</li>
+<li>One thing I deliberately did <em>not</em> do: I kept the Markdown files out of my sitemap. The reason is below.</li>
+<li>Everything described here is live and checkable. What I cannot show you yet is a citation count — that measurement is running, and I will update this page with the numbers, good or bad.</li>
+</ul>
+<h2>Why I cared</h2>
+<p>My site publishes a full news digest every morning — global and China finance and current-affairs headlines, translated into English and Vietnamese. News has a short life. If an AI assistant answers a reader's question using somebody else's summary, my work is invisible, even if the facts originally came from reporting I translated and checked.</p>
+<p>More readers now meet the news inside an AI answer first. So the practical question for a small publisher is not "how do I rank for this keyword?" It is: <strong>when the machine writes the answer, can it read my page well enough to quote it — and does it know it is allowed to?</strong></p>
+<p>This page is my working answer, written as a record of what I actually changed, in the order I changed it.</p>
+<h2>What I changed</h2>
+<h3>1. A <code>/llms.txt</code> file at the root</h3>
+<p>The <code>llms.txt</code> proposal is simple: put a plain-text map of your site at <code>/llms.txt</code>, written for language models — what the site is, and links to the cleanest version of every important page.</p>
+<p>Mine lists all 52 articles currently on the site, in both languages (104 links), and every link points to the Markdown version of the page, not the HTML one. At the end of the file there is a short FAQ, including the question "Can AI assistants quote or summarize this site?" — answered with a plain yes, plus where the Markdown files live.</p>
+<p>You can read it here: <a href="https://vien.wangshengfeng.dpdns.org/llms.txt">https://vien.wangshengfeng.dpdns.org/llms.txt</a></p>
+<h3>2. A Markdown twin for every page</h3>
+<p>Every HTML page on the site also exists as Markdown at the same URL plus <code>.md</code>. An article at <code>/8093631785370763939.html</code> is also at <code>/8093631785370763939.md</code> — same words, no styling, no navigation, no scripts. The two homepages have twins too (<code>/index.md</code> and <code>/vi/index.md</code>).</p>
+<p>The reasoning is plain: a model that wants to quote a passage has an easier job with clean Markdown than with a styled HTML page. I cannot control whether I get cited. I can control whether citing me is easy.</p>
+<h3>3. An FAQ that answers the machine's questions</h3>
+<p>The FAQ in <code>llms.txt</code> and in the homepage Markdown covers five questions: what the site is, how often it updates, where the Chinese original is published, which languages are available, and whether AI assistants may quote it. None of this is clever. It simply removes ambiguity — the site says, in so many words, who publishes it and that quoting is welcome.</p>
+<h3>4. A fully open robots.txt</h3>
+<p>My robots.txt is three lines: every crawler is allowed everywhere, plus a pointer to the sitemap. No AI crawler is blocked. This sounds obvious, but it is the step most often failed silently: a site that blocks a retrieval crawler has decided, in advance, never to be cited by that system.</p>
+<h3>5. The supporting basics</h3>
+<p>Every article carries a self-referential canonical URL, hreflang alternates for English, Vietnamese, and x-default, Open Graph tags, and NewsArticle structured data. One site, one entity, two languages — stated the same way on every page.</p>
+<h3>The full list</h3>
+<table>
+<thead>
+<tr><th>Change</th><th>Why</th><th>Status on this site</th></tr>
+</thead>
+<tbody>
+<tr><td><code>/llms.txt</code> at the root, listing every article's Markdown version, with an FAQ at the end</td><td>Give AI systems one clean map of the site</td><td>Live — 104 article links (52 articles × English/Vietnamese)</td></tr>
+<tr><td>A Markdown twin for every page (same URL + <code>.md</code>)</td><td>Plain Markdown is easier for models to parse and quote than styled HTML</td><td>Live — every article and both homepages</td></tr>
+<tr><td>FAQ block inside <code>llms.txt</code> and the homepage <code>.md</code></td><td>Answer "can AI quote this site?" before it is asked</td><td>Live — 5 questions</td></tr>
+<tr><td>robots.txt fully open (<code>Allow: /</code> for all agents)</td><td>A blocked crawler cannot cite you</td><td>Live — no AI crawler blocked</td></tr>
+<tr><td>Sitemap with HTML pages only, no <code>.md</code> URLs</td><td>Keep the sitemap a list of canonical pages, not file formats</td><td>Live — deliberate choice, explained below</td></tr>
+<tr><td>Canonical + hreflang (en/vi/x-default) + NewsArticle JSON-LD on every article</td><td>One unambiguous entity in two languages</td><td>Live</td></tr>
+</tbody>
+</table>
+<h2>What I deliberately did not do</h2>
+<p><strong>I did not put the Markdown files in my sitemap.</strong> Most guides tell you to submit everything. My sitemap lists canonical pages — the HTML articles a human reader should land on. The <code>.md</code> files are an alternate format of those same pages, and they are already discoverable through <code>llms.txt</code>, which is the file actually written for machines. A sitemap full of duplicate-format URLs tells a search engine less, not more.</p>
+<p><strong>I did not write content "for AI" that humans would not want.</strong> The digest is written for readers first, in full, every day. The machine-facing work is all in the packaging: formats, files, and metadata. If a change would make the site worse for a person reading it, I did not make it.</p>
+<p><strong>I did not buy links, and this page is not a promise.</strong> Nothing here guarantees a citation. Anyone who sells you a guarantee on AI citations is selling you a story.</p>
+<h2>What happened so far — and what I cannot claim yet</h2>
+<p>What I can state as fact today:</p>
+<ul>
+<li>Every file described above is deployed and returns HTTP 200, including <code>/llms.txt</code>, both homepage Markdown twins, and the article twins.</li>
+<li>The setup survives a daily rebuild: the whole site is regenerated from source every day, and the Markdown twins and <code>llms.txt</code> are produced by the same build, not maintained by hand.</li>
+</ul>
+<p>What I cannot claim yet:</p>
+<ul>
+<li>I do not have a trustworthy before/after citation count. AI answers are not a stable page you can screenshot once; the same prompt can cite different sources on different days.</li>
+</ul>
+<p>So I am measuring it the slow way: a fixed panel of prompts about topics my site covers, asked to the major answer engines on a schedule, with citations recorded. Two weeks of that gives a baseline worth printing.</p>
+<blockquote>[PLACEHOLDER — Table 2: prompt panel results. Columns: prompt / engines asked / cited before changes (baseline) / cited after two weeks / notes. To be filled from the measurement log, not from memory.]</blockquote>
+<p>When the table is filled in, this page gets an update date and the numbers stay — including if the honest number is "no change yet."</p>
+<h2>How I check whether it is working</h2>
+<p>If you run a site and want to copy the method, copy the measurement too:</p>
+<ol>
+<li><strong>Pick 10–20 real questions</strong> your readers would ask an AI assistant about your topics. Write them down before you change anything.</li>
+<li><strong>Ask each engine the same questions</strong> (ChatGPT, Perplexity, Gemini, Claude) and record which sources get cited. Repeat on a fixed schedule — weekly is enough.</li>
+<li><strong>Watch referral traffic</strong> from AI surfaces in your analytics, separately from search.</li>
+<li><strong>Check the basics in Search Console</strong>: is the sitemap being read, are the canonical pages indexed, are any pages "discovered but not indexed" in bulk? A citation strategy on top of an indexing problem is decoration.</li>
+<li><strong>Give it weeks, not days.</strong> You are measuring a habit of machines, not a ranking position.</li>
+</ol>
