@@ -4,6 +4,7 @@
 
 ## Articles
 
+- [2026-11-25 Nov 24 Headlines: Chen Jining Under Investigation, Section 301 Tariffs Could Come as Soon as Tuesday — Nvidia Probe Still Escalating](https://vien.wangshengfeng.dpdns.org/5637455178665169077.md)
 - [2026-11-24 Nov 23 Headlines: Jensen Huang Returns After 11 Days, Shares Surge 31.5% — Trump Takes the Credit, the Investigation Isn't Over](https://vien.wangshengfeng.dpdns.org/8847070695541165267.md)
 - [2026-11-23 Nov 22 Headlines: Trump Tried to Put Out the Fire — and It Burned Hotter: the Nvidia Chip Pipeline and Five Big Economic Events Next Week](https://vien.wangshengfeng.dpdns.org/8093631785370763939.md)
 - [2026-11-22 Nov 21 Headlines: Musk's 'T Country', Trump Rescues Jensen Huang and Three Outages in One Week](https://vien.wangshengfeng.dpdns.org/7928575768984038674.md)
